@@ -1,0 +1,45 @@
+{% extends "index.html" %}
+
+{% block leftsidebar %}
+{% endblock %}
+{% block filterbutton %}
+{% endblock %}
+{% block main %}
+<h1 class="task_header" id="overdue_task_header">
+  {{ task }}
+</h1>
+<div id="overdue_tags">
+  <span class="badge bg-{{ s_cls }}">Incomplete</span>
+  <span class="badge bg-{{ o_cls }}">Overdue</span>
+</div>
+
+<br>
+<br>
+<h1 class="taskpointsheader" id="taskpointsheader"> Points To Remember: </h1>
+<p class="task_points" id="task_points">
+  {{ points }}
+</p>
+<br>
+<!-- Return to task display page -->
+<form action="{{url_for('todolist.complete_overdue_task', id=id)}}" method="POST">
+  <button type="submit" id="return_overdue" class="btn btn-primary">Return</button>
+</form>
+
+ <!-- Delete button for overdue tasks -->
+ <div class="col delete">
+  <form action="{{ url_for('delete_overdue_task', id=id) }}" method="POST">
+    <button id="delete_overdue" type="submit" class="btn btn-danger">Delete</button>
+  </form>
+</div>
+</div>
+{% endblock %}
+
+{% block quote %}
+        <div class="blockquote" id="overdue_quote">
+          <blockquote>
+            <p class="mb-0">Just remember, once you're over the hill you begin to pick up speed.</p>
+            <br>
+            <footer class="blockquote-footer"> <cite>Arthur Schopenhauer</cite></footer>
+          </blockquote>
+        </div>
+{% endblock %}

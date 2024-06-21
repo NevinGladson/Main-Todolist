@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+
+<!-- Main Page -->
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <title>To-Do List</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <h1 class="display-1 text-center">Tasks to do</h1>
+      <!-- Logout Link -->
+      <div class="logout-link">
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-link">Logout</a>
+      </div>
+    </div>
+    <hr>
+
+    {% block filterbutton %}
+    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
+    {% endblock %}
+
+
+    <div class="row">
+      <!-- Column to display overdue tasks -->
+      {% block leftsidebar %}
+      <div class="col-2 sidebar">
+        <h2>Overdue Tasks</h2>
+        <p>
+        <table class="table table-striped table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" class="tableheader">Tasks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Displaying overdue tasks -->
+            {% for id, task in overdue %}
+            <tr>
+              <td scope="row" class="task"><a href="{{url_for('todolist.overdue', id=id)}}"
+                  style="color: black">{{task}}</a></td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+      {% endblock %}
+      <div class="col-9">
+        <!-- Displaying current task headers -->
+        {% block main %}
+        <h2 class="current_tasks">Current Tasks</h2>
+        <br>
+        <p>
+        <table class="table table-striped table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" class="tableheader">Tasks</th>
+              <th scope="col" class="tableheaderlink">
+                <button id="date-sort-button" class="link-button">Date</button>
+              </th>
+              <th scope="col" class="tableheader">Day</th>
+              <th scope="col" class="tableheaderlink">
+                <button id="urgency-sort-button" class="link-button">Urgency</button>
+              </th>
+              <th scope="col" class="tableheaderlink">
+                <button id="status-sort-button" class="link-button">Status</button>
+              </th>
+
+            </tr>
+          </thead>
+          <tbody id="tasks"> <!-- Added ID here for JavaScript to target -->
+            <!-- Displaying current tasks -->
+            {% for id, task, date_of_task, day_of_task, urgency, status in tasks %}
+            <tr>
+              <td scope="row" class="task"><a href="{{url_for('todolist.taskdetail', id=id)}}"
+                  style="color: black">{{task}}</a></td>
+              <td scope="row" class="date_of_task">{{date_of_task}}</td>
+              <td scope="row" class="day">{{day_of_task}}</td>
+              <td scope="row" class="urgency">{{urgency}}</td>
+              <td scope="row" class="status">{{status}}</td>
+              {% if status != 'Complete' %}
+              <td scope="row">
+                <a class="btn btn-primary" href="{{url_for('todolist.edit_task', id=id)}}">Edit Task</a>
+              </td>
+              {% else %}
+              <td></td> <!-- Empty cell for completed tasks -->
+              {% endif %}
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+
+        <!--URL for add tasks page -->
+        <a class="btn btn-primary" href="{{url_for('todolist.add_tasks', id=id)}}">Add Task</a>
+        <!-- Button to display the current week tasks -->
+        <a class="btn btn-primary" href="javascript:loadWeeklySchedule()">Weekly Schedule</a>
+        </p>
+        
+        {% endblock %}
+
+        {% block quote %}
+        <div class="blockquote">
+          <blockquote>
+            <p class="mb-0">Just remember, once you're over the hill you begin to pick up speed.</p>
+            <br>
+            <footer class="blockquote-footer"> <cite>Arthur Schopenhauer</cite></footer>
+          </blockquote>
+        </div>
+        {% endblock %}
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+
+      <script src="{{ url_for('static', filename='main.js') }}"></script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+
+
+
+<!--Filter modal allows us to filter tasks by title, date, urgency and status and the ability to sort in ascending or descending order of date, urgency value and status -->
+      <!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="filterModalLabel">Filter Tasks</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="GET" action="{{ url_for('index') }}">
+        <div class="modal-body">
+          <!-- Filter options here -->
+          <input type="text" name="title" class="form-control mb-2" placeholder="Search by title" value="{{ request.args.get('title', '') }}">
+          <input type="date" name="start_date" class="form-control mb-2" value="{{ request.args.get('start_date', '') }}">
+          <input type="date" name="end_date" class="form-control mb-2" value="{{ request.args.get('end_date', '') }}">
+          <div>
+            <label>Status:</label>
+            <select name="status" class="form-control mb-2">
+              <option value="">Select Status</option>
+              <option value="1" {% if request.args.get('status') == '1' %}selected{% endif %}>Complete</option>
+              <option value="2" {% if request.args.get('status') == '2' %}selected{% endif %}>Not Complete</option>
+            </select>
+          </div>
+          <div>
+            <label>Urgency:</label>
+            <div id="urgency_options">
+
+            <div class="form-check">
+              <input class="form-check-input" name="urgency" type="checkbox" value="1" id="veryImportantCheck" {% if '1' in request.args.getlist('urgency') %}checked{% endif %}>
+              <label class="form-check-label" for="veryImportantCheck">Very Important</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" name="urgency" type="checkbox" value="2" id="importantCheck" {% if '2' in request.args.getlist('urgency') %}checked{% endif %}>
+              <label class="form-check-label" for="importantCheck">Important</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" name="urgency" type="checkbox" value="3" id="normalCheck" {% if '3' in request.args.getlist('urgency') %}checked{% endif %}>
+              <label class="form-check-label" for="normalCheck">Normal</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" name="urgency" type="checkbox" value="4" id="expendableCheck" {% if '4' in request.args.getlist('urgency') %}checked{% endif %}>
+              <label class="form-check-label" for="expendableCheck">Expendable</label>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label id="sort_by_label">Sort By:</label>
+            <select name="sort_by" class="form-control" id="dropdown_sort">
+              <option value="date_of_task" {% if request.args.get('sort_by') == 'date_of_task' %}selected{% endif %}>Date</option>
+              <option value="urgency" {% if request.args.get('sort_by') == 'urgency' %}selected{% endif %}>Urgency</option>
+              <option value="status" {% if request.args.get('sort_by') == 'status' %}selected{% endif %}>Status</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label id="sort_label">Order:</label>
+            <select name="order" class="form-control" id="dropdown_order">
+              <option value="asc" {% if request.args.get('order') == 'asc' %}selected{% endif %}>Ascending</option>
+              <option value="desc" {% if request.args.get('order') == 'desc' %}selected{% endif %}>Descending</option>
+            </select>
+          </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Apply Filters</button>
+          <a href="{{ url_for('index') }}" class="btn btn-secondary">Clear Filter</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  #urgency_options {
+    margin-left: 200px;
+  }
+  #sort_by_label{
+    margin-top: 10px;
+  }
+  #dropdown_order, #dropdown_sort {
+    margin-left: 215px !important;
+    margin-top: -5px;
+    width: 150px; /* Adjust the width as needed */
+    font-size: 0.8rem; /* Adjusts the font size */
+    padding: 4px 8px; /* Adjust padding to ensure content visibility */
+    height: auto; /* Let the height adjust based on content and padding */
+    line-height: normal; /* Ensures text is centered vertically */
+}
+</style>
+
+
+</body>
+
+
+
+
+</html>

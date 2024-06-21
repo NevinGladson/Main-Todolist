@@ -1,0 +1,83 @@
+<!-- Page to edit the individual tasks -->
+
+{% extends "index.html" %}
+
+{% block filterbutton %}
+{% endblock %}
+
+{% block leftsidebar %}
+{% endblock %}
+
+{% block main %}
+<p>
+<form action="{{url_for('todolist.edit_task', id=id)}}" method="POST">
+
+  <div class="mb-3">
+    <label for="task_title" id="title_header" class="form-label">Task:</label>
+    <textarea rows="1" id="task_title" class="form-control" name="task">{{ task }}</textarea>
+    <div class="mb-3">
+      <label id="title_header" class="form-label">Urgency</label><br />
+      <div id="urgency_container_edit">
+        {% for uid, name in statuses %}
+        <div id="title_header" class="form-check form-check-inline">
+          <!-- The current urgency of the task is ticked, the other urgencies are unticked -->
+          <input class="form-check-input" type="radio" name="urgency" id="{{uid}}_{{name}}" value="{{uid}}" {{ 'checked' if urgency == uid }}>
+          <label class="form-check-label" for="{{uid}}_{{name}}">{{name}}</label>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label id="title_header" class="start_date" for="start">Start date:</label>
+        <input type="date" id="start" name="date_of_task" value="{{date_of_task}}" min="{{today_date}}"
+          max="2030-12-31">
+      </div>
+
+      <div class="mb-3">
+        <label for="points" class="points_edit" id="title_header" class="form-label">Points To Remember</label>
+        <textarea rows="1" id="points" class="form-control" name="points">
+            {{points}}
+          </textarea>
+      </div>
+      <div class="mb-3">
+        <div class="form-check">
+          {% if status != 1 %}
+          <!-- If the status of the task is not complete, display the checkbox as unticked while returning the value 1 if ticked -->
+          <input class="form-check-label" type="checkbox" id="status" name="status" , value="1">
+          {% else %}
+          <!-- If the status of the task is complete, display the checkbox as ticked while returning the value 1 if ticked -->
+          <input class="form-check-label" type="checkbox" id="status" name="status" , value="1" checked>
+          {% endif %}
+          <label class="form-check-label" for="status"> Task Complete </label>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <!-- Update button -->
+        <div class="col">
+          <form action="{{ url_for('todolist.edit_task', id=id) }}" method="POST">
+            <button type="submit" class="btn btn-primary">Update</button>
+          </form>
+        </div>
+
+        <!-- Delete button -->
+        <div class="col delete">
+          <form action="{{ url_for('todolist.delete_task', id=id) }}" method="POST">
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+
+</form>
+</p>
+      {% endblock %}
+
+      {% block quote %}   
+<div class="blockquote_edit">
+<blockquote>
+    <p class="mb-0">Just remember, once you're over the hill you begin to pick up speed.</p>
+    <br>
+    <footer class="blockquote-footer"> <cite>Arthur Schopenhauer</cite></footer>
+</blockquote>
+</div>
+  {% endblock %}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<!-- Initial Page rendering -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to the Task Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="auth_message.css">
+    <link href="{{ url_for('static', filename='auth.css') }}" rel="stylesheet"/> 
+  
+</head>
+
+
+<body>
+    <div class="content blurred">
+    <section class="hero is-primary is-fullheight">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+                    <div class="navbar-menu">
+                        <div class="navbar-start">
+                            <!-- Link to Admin Page -->
+                            <a href="http://admin-todolist-env.eba-qgfa3w94.us-east-1.elasticbeanstalk.com/" class="navbar-item" id="admin-page-auth">
+                                Admin Page
+                            </a>
+                        </div>
+                        <div class="navbar-end">
+                            <!-- Login Page Link -->
+                            <a href="{{ url_for('auth.login') }}" class="navbar-item">
+                                Login
+                            </a>
+                            <!-- Signup Page Link -->
+                            <a href="{{ url_for('auth.signup') }}" class="navbar-item">
+                                SignUp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        
+
+        <div class="hero-body">
+            <div class="container has-text-centered">
+               {% block content %}
+               {% endblock %}
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+</html>

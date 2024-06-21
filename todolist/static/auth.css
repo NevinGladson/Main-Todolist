@@ -1,0 +1,37 @@
+
+.navbar-menu {
+    width: 110%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} 
+
+.navbar-item {
+    font-size: 22px;
+    padding: 10px;
+    font-weight: bold;
+}
+.navbar-start {
+    flex: 1; /* Takes up space as needed */
+    justify-content: flex-start; /* Aligns children to the start */
+}
+
+.navbar-end {
+    flex: 1;
+    justify-content: flex-end; /* Aligns children to the end */
+}
+
+.disclaimer {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: transparent; /* Light gray background */
+    color: #333; /* Dark text for better readability */
+    font-size: medium;
+    font-style: italic;
+}
+
+.disclaimer p {
+    margin: 0; /* Remove default paragraph margin */
+}
+
+/* Remove hard-coded margins for more responsive design */

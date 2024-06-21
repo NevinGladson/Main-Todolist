@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+
+{% block leftsidebar %}
+{% endblock %}
+{% block filterbutton %}
+{% endblock %}
+{% block main %}
+{# FIXME: The following urls need to be fixed with url_for #}
+<!-- Displaying header -->
+<h1 class="task_header" id="task_detail_header">
+  {{task}}
+</h1>
+<div>
+  <!-- Displays urgency and status in varied colours to indicate it's respective importance-->
+  <span class="badge bg-{{u_cls}}">{{urgency}}</span>
+  <span class="badge bg-{{s_cls}}">{{status}}</span>
+</div>
+
+<br>
+<br>
+<!-- Displaying points to remember -->
+<h1 class="taskpointsheader" id="task_detail_points"> Points To Remember: </h1>
+<p class="task_points">
+  {{points}}
+</p>
+<br>
+
+<!-- Return to main page-->
+<a class="btn btn-primary" id="task_detail_button" href="{{url_for('index')}}">Return</a>
+
+{% endblock %}
+
+{% block rightsidebar %}
+{% endblock %}
+{% block quote %}
+{% endblock %}
